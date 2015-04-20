@@ -23,6 +23,8 @@ namespace PauseMe
 
         private DateTime _TimerStarted;
 
+        List<OverlayForm> _OpenForms = new List<OverlayForm>();
+
         public MainForm()
         {
             InitializeComponent();
@@ -35,8 +37,6 @@ namespace PauseMe
 
             lblCountdown.Text = "";
             tbxStatus.Text = "Stopped";
-
-            tmrMain_Tick(null, null);
         }
 
         private void tmrCountdown_Tick(object sender, EventArgs e)
@@ -49,7 +49,6 @@ namespace PauseMe
                 tmrCountdown.Stop();
                 this.Hide();
             }
-
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -74,10 +73,6 @@ namespace PauseMe
             niMain.Text = "Pause Me - Stopped";
         }
 
-        private void lblCountdown_Click(object sender, EventArgs e)
-        {
-        }
-
         private void MainForm_Load(object sender, EventArgs e)
         {
             BeginInvoke(new MethodInvoker(delegate
@@ -90,10 +85,30 @@ namespace PauseMe
 
         private void tmrMain_Tick(object sender, EventArgs e)
         {
-            lblCountdown.Text = "Pause time: " + (20 - _CountDownTimer++) + "s";
-            this.Show();
+            _OpenForms.Clear();
+
             _TimerStarted = DateTime.Now;
-            tmrCountdown.Start();
+
+            foreach (var screen in Screen.AllScreens)
+            {
+                var frm = new OverlayForm();
+                _OpenForms.Add(frm);
+                frm.FormClosed += frm_FormClosed;
+                frm.Left = screen.Bounds.Left;
+                frm.Top = screen.Bounds.Top;
+                frm.StartPosition = FormStartPosition.Manual;
+
+                frm.Show(); 
+            }
+        }
+
+        void frm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            foreach (var frm in _OpenForms.ToArray())
+            {
+                frm.FormClosed -= frm_FormClosed;
+                frm.Close();
+            }
         }
 
         private void lblCountdown_DoubleClick(object sender, EventArgs e)
