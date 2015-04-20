@@ -35,6 +35,8 @@ namespace PauseMe
 
             lblCountdown.Text = "";
             tbxStatus.Text = "Stopped";
+
+            tmrMain_Tick(null, null);
         }
 
         private void tmrCountdown_Tick(object sender, EventArgs e)
