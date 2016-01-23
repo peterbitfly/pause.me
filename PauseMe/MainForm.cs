@@ -36,6 +36,7 @@ namespace PauseMe
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Opacity = 0.5;
             this.WindowState = FormWindowState.Maximized;
+            this.tmrMain.Interval = (int)_settings.PauseEvery.TotalMilliseconds;
 
             lblCountdown.Text = "";
             tbxStatus.Text = "Stopped";
@@ -90,8 +91,8 @@ namespace PauseMe
         private void tmrMain_Tick(object sender, EventArgs e)
         {
             _OpenForms.Clear();
-
-            _TimerStarted = DateTime.Now;
+            tmrMain.Stop();
+            tmrUpdateStatus.Stop();
 
             foreach (var screen in Screen.AllScreens)
             {
@@ -113,6 +114,10 @@ namespace PauseMe
                 frm.FormClosed -= frm_FormClosed;
                 frm.Close();
             }
+
+            tmrMain.Start();
+            _TimerStarted = DateTime.Now;
+            tmrUpdateStatus.Start();
         }
 
         private void lblCountdown_DoubleClick(object sender, EventArgs e)
