@@ -41,7 +41,7 @@ namespace PauseMe
             lblCountdown.Text = "";
             tbxStatus.Text = "Stopped";
 
-            _updateCountdownLabel = (timer) => lblCountdown.Text = "Pause time: " + (new TimeSpan(0, 0, ((int)_settings.PauseTime.TotalSeconds) - timer)).ToString("h'h 'm'm 's's'");
+            _updateCountdownLabel = (timer) => lblCountdown.Text = "Pause time: " + (new TimeSpan(0, 0, ((int)_settings.PauseTime.TotalSeconds) - timer)).ToShortString();
         }
 
         private void tmrCountdown_Tick(object sender, EventArgs e)

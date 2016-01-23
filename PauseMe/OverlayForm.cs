@@ -27,7 +27,7 @@ namespace PauseMe
             this.WindowState = FormWindowState.Maximized;
             this.DoubleBuffered = true;
 
-            _updateCountdownLabel = (timer) => lblCountdown.Text = "Pause time: " + (new TimeSpan(0, 0, ((int)_settings.PauseTime.TotalSeconds) - timer)).ToString("h'h 'm'm 's's'");
+            _updateCountdownLabel = (timer) => lblCountdown.Text = "Pause time: " + (new TimeSpan(0, 0, ((int)_settings.PauseTime.TotalSeconds) - timer)).ToShortString();
             _updateCountdownLabel(_CountDownTimer++);
 
             tmrCountdown.Start();
