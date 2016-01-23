@@ -20,14 +20,16 @@ namespace PauseMe
     public partial class MainForm : Form
     {
         private int _CountDownTimer = 0;
-
         private DateTime _TimerStarted;
-
         List<OverlayForm> _OpenForms = new List<OverlayForm>();
+        private Settings _settings;
+        private readonly Action<int> _updateCountdownLabel;
 
-        public MainForm()
+        public MainForm(Settings settings)
         {
             InitializeComponent();
+
+            _settings = settings;
 
             this.TopMost = true;
             this.ShowInTaskbar = false;
@@ -37,13 +39,15 @@ namespace PauseMe
 
             lblCountdown.Text = "";
             tbxStatus.Text = "Stopped";
+
+            _updateCountdownLabel = (timer) => lblCountdown.Text = "Pause time: " + (new TimeSpan(0, 0, ((int)_settings.PauseTime.TotalSeconds) - timer)).ToString("h'h 'm'm 's's'");
         }
 
         private void tmrCountdown_Tick(object sender, EventArgs e)
         {
-            lblCountdown.Text = "Pause time: " + (20 - _CountDownTimer++) + "s";
+            _updateCountdownLabel(_CountDownTimer++);
 
-            if (_CountDownTimer == 21)
+            if (_CountDownTimer > _settings.PauseTime.TotalSeconds)
             {
                 _CountDownTimer = 0;
                 tmrCountdown.Stop();
@@ -79,7 +83,7 @@ namespace PauseMe
             {
                 Hide();
                 startToolStripMenuItem_Click(this, null);
-                niMain.ShowBalloonTip(5000, "Pause Me Started", "Pause Me has been started an will gently remind you every 20 minutes to rest your eyes!", ToolTipIcon.Info);
+                niMain.ShowBalloonTip(5000, "Pause Me Started", $"Pause Me has been started an will gently remind you every {_settings.PauseEvery.TotalMinutes} minutes to rest your eyes!", ToolTipIcon.Info);
             }));
         }
 
@@ -91,7 +95,7 @@ namespace PauseMe
 
             foreach (var screen in Screen.AllScreens)
             {
-                var frm = new OverlayForm();
+                var frm = new OverlayForm(_settings);
                 _OpenForms.Add(frm);
                 frm.FormClosed += frm_FormClosed;
                 frm.Left = screen.Bounds.Left;
@@ -118,7 +122,7 @@ namespace PauseMe
 
         private void tmrUpdateStatus_Tick(object sender, EventArgs e)
         {
-            var timePassed = (DateTime.Now - (_TimerStarted.AddMinutes(20))).Negate();
+            var timePassed = (DateTime.Now - (_TimerStarted.AddMinutes(_settings.PauseEvery.TotalMinutes))).Negate();
             var minutesPassed = timePassed.Minutes.ToString("00");
             var secondsPassed = timePassed.Seconds.ToString("00");
 
