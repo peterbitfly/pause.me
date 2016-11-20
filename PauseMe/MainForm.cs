@@ -116,7 +116,7 @@ namespace PauseMe
                 frm.Close();
             }
 
-            tmrMain.Stop();
+            tmrMain.Stop();     // Stop() is a hack to reset timer in case it's not stopped
             tmrMain.Start();
             _TimerStarted = DateTime.Now;
             tmrUpdateStatus.Stop();
@@ -151,6 +151,7 @@ namespace PauseMe
                 {
                     frm_Restart();
                 }
+                // else preserve paused state
             }
         }
     }
