@@ -63,11 +63,7 @@ namespace PauseMe
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            tmrMain.Start();
-            _TimerStarted = DateTime.Now;
-            tmrUpdateStatus.Start();
-
-            tbxStatus.Text = "Running";
+            frm_Restart();
         }
 
         private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
@@ -109,14 +105,21 @@ namespace PauseMe
 
         void frm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            frm_Restart();
+        }
+
+        private void frm_Restart()
+        {
             foreach (var frm in _OpenForms.ToArray())
             {
                 frm.FormClosed -= frm_FormClosed;
                 frm.Close();
             }
 
+            tmrMain.Stop();
             tmrMain.Start();
             _TimerStarted = DateTime.Now;
+            tmrUpdateStatus.Stop();
             tmrUpdateStatus.Start();
         }
 
@@ -133,6 +136,22 @@ namespace PauseMe
 
             tbxStatus.Text = "Running (" + minutesPassed + ":" + secondsPassed + ")";
             niMain.Text = "Pause Me - Running (" + minutesPassed + ":" + secondsPassed + ")";
+        }
+
+        void SessionSwitchHandler(object sender, Microsoft.Win32.SessionSwitchEventArgs e)
+        {
+            if (e.Reason == Microsoft.Win32.SessionSwitchReason.SessionLock)
+            {
+                tmrMain.Stop();
+                tmrUpdateStatus.Stop();
+            }
+            else if (e.Reason == Microsoft.Win32.SessionSwitchReason.SessionUnlock)
+            {
+                if (tbxStatus.Text != "Stopped")
+                {
+                    frm_Restart();
+                }
+            }
         }
     }
 }
