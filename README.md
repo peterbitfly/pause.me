@@ -5,8 +5,7 @@ It is a small Windows .NET application that hides in the taskbar. Every 20 minut
 
 In case you would like to skip a pause you can hide the overlay by double clicking onto it.
 
-![alt text][screenshot]
-[screenshot]: https://raw.githubusercontent.com/ppratscher/pause.me/master/PauseMe/Screenshot.png "Pause Me example"
+![alt text](https://raw.githubusercontent.com/ppratscher/pause.me/master/PauseMe/Screenshot.png)
 
 To get Pause Me either [download it](https://github.com/ppratscher/pause.me/releases) or build it from source.
 
