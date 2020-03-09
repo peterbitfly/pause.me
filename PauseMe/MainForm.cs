@@ -80,7 +80,7 @@ namespace PauseMe
             {
                 Hide();
                 startToolStripMenuItem_Click(this, null);
-                niMain.ShowBalloonTip(5000, "Pause Me Started", $"Pause Me has been started an will gently remind you every {_settings.PauseEvery.TotalMinutes} minutes to rest your eyes!", ToolTipIcon.Info);
+                niMain.ShowBalloonTip(5000, "Pause Me Started", $"Pause Me has been started and will gently remind you every {_settings.PauseEvery.TotalMinutes} minutes to rest your eyes!", ToolTipIcon.Info);
             }));
         }
 
